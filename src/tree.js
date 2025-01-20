@@ -56,12 +56,36 @@ class Tree {
     }
 
     inOrder(callback){
+        const traverse = (node) => {
+            if(node == null) return;
+      
+            traverse(node.left);
+            callback(node.data);
+            traverse(node.right);
+        }
+        traverse(this.#root);
     }
 
     preOrder(callback){
+        const traverse = (node) => {
+            if(node == null) return;
+      
+            callback(node.data);
+            traverse(node.left);
+            traverse(node.right);
+        }
+        traverse(this.#root);
     }
 
     postOrder(callback){
+        const traverse = (node) => {
+            if(node == null) return;
+      
+            traverse(node.left);
+            traverse(node.right);
+            callback(node.data);
+        }
+        traverse(this.#root);
     }
 
     height(node){
@@ -76,6 +100,7 @@ class Tree {
     rebalance(){
     }
 
+    //removes duplicates and sort array
     getUniqueElements(arr){
         return Array.from(new Set(arr)).sort((a,b) => a - b);
     }
