@@ -5,7 +5,6 @@ class Tree {
 
     constructor(array){
         this.array = this.getUniqueElements(array);
-         console.log(this.array)
     }
 
     buildTree(array){
@@ -40,19 +39,65 @@ class Tree {
             frontIndex++;
         }
         this.#root = root;
-        return root;
     }
 
     insert(value){
+        let newNode = new Node(value);
+        let curr = this.#root;
+        let parent = null;
+
+        if(this.#root === null) return "Pass in array to tree";
+
+        while(curr !== null){
+            parent = curr;
+
+            if(curr.data > x){
+                curr = curr.left; 
+            } else if(curr.data < x) {
+                curr = curr.right; 
+            } else {
+                return "Key already exist";
+            }
+        }
+        
+        if(parent.data > value){
+            parent.left = newNode;
+        } else {
+            parent.right = newNode;
+        }
     }
 
     deleteItem(value){
     }
 
     find(value){
+        if(this.#root === null) return null;
+
+        let curr = this.#root;
+
+        while(curr != null){
+            if(curr.data > value){
+                curr = curr.left;
+            } else if(curr.data < value){
+                curr = curr.right;
+            } else {
+                return curr;
+            }
+        }
+        return null;
     }
 
     levelOrder(callback){
+        if(this.#root === null) return;
+        let queue = [];
+        queue.push(this.#root);
+
+        while(queue.length){
+            callback(queue[0].data);
+            if(queue[0].left !== null) queue.push(queue[0].left);
+            if(queue[0].right !== null) queue.push(queue[0].right);
+            queue.shift();
+        }
     }
 
     inOrder(callback){
@@ -100,10 +145,22 @@ class Tree {
     rebalance(){
     }
 
-    //removes duplicates and sort array
     getUniqueElements(arr){
         return Array.from(new Set(arr)).sort((a,b) => a - b);
     }
+
+    prettyPrint = (node, prefix = "", isLeft = true) => {
+        if (node === null) {
+          return;
+        }
+        if (node.right !== null) {
+          prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+        }
+        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+        if (node.left !== null) {
+          prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+        }
+    };  
 }
 
 export {Tree};
