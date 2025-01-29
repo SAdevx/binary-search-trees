@@ -68,6 +68,41 @@ class Tree {
     }
 
     deleteItem(value){
+        const deleteNode = (root, value) => {
+            if(this.#root === null) return null;
+    
+            if(value < root.data){
+                root.left  = deleteNode(root.left,value);
+            }
+            else if(value > root.data){
+                root.right = deleteNode(root.right,value);
+            } 
+            else {
+                if(root.left == null && root.right == null){
+                    root = null;
+                } else if(root.left == null){
+                    root = root.right;
+                } else if(root.right == null){
+                    root = root.left;
+                } else {
+                    let tmpNode = findMinNode(root.right);
+                    root.data = tmpNode.data;
+                    root.right = deleteNode(root.right,tmpNode.data);
+                }
+            } 
+            return root; 
+        }
+        this.#root = deleteNode(this.#root, value);
+    }
+
+    findMinNode(node){
+        let parent = null;
+
+        while(node != null){
+            parent = node;
+            node = node.left;
+        }
+        return parent;
     }
 
     find(value){
@@ -134,9 +169,34 @@ class Tree {
     }
 
     height(node){
+        if(node == null) return -1;
+
+        return Math.max(this.height(node.left),this.height(node.right))+1;
     }
 
     depth(node){
+        if(node == null) return null;
+
+        let depth = 0;
+        let queue = [];
+        queue.push(this.#root);
+
+        while(queue.length){
+            for(let i = 0; i < queue.length; i++){
+                let currNode = queue.shift();
+
+                if(currNode === node.data)
+                    return depth;
+            
+                if(currNode.left !== null)
+                    queue.push(currNode.left);
+    
+                if(currNode.right !== null)
+                    queue.push(currNode.right);
+            }
+            depth++;
+        }
+        return null;
     }
 
     isBalanced(){
@@ -160,7 +220,7 @@ class Tree {
         if (node.left !== null) {
           prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
         }
-    };  
+    };
 }
 
 export {Tree};
