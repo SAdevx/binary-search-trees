@@ -48,12 +48,12 @@ class Tree {
 
         if(this.#root === null) return "Pass in array to tree";
 
-        while(curr !== null){
+        while(curr != null){
             parent = curr;
 
-            if(curr.data > x){
+            if(curr.data > value){
                 curr = curr.left; 
-            } else if(curr.data < x) {
+            } else if(curr.data < value) {
                 curr = curr.right; 
             } else {
                 return "Key already exist";
@@ -123,14 +123,14 @@ class Tree {
     }
 
     levelOrder(callback){
-        if(this.#root === null) return;
+        if(this.#root == null) return;
         let queue = [];
         queue.push(this.#root);
 
         while(queue.length){
             callback(queue[0].data);
-            if(queue[0].left !== null) queue.push(queue[0].left);
-            if(queue[0].right !== null) queue.push(queue[0].right);
+            if(queue[0].left != null) queue.push(queue[0].left);
+            if(queue[0].right != null) queue.push(queue[0].right);
             queue.shift();
         }
     }
@@ -182,45 +182,71 @@ class Tree {
         queue.push(this.#root);
 
         while(queue.length){
-            for(let i = 0; i < queue.length; i++){
+            let n = queue.length
+            for(let i = 0; i < n; i++){
                 let currNode = queue.shift();
 
-                if(currNode === node.data)
+                if(currNode === node)
                     return depth;
             
-                if(currNode.left !== null)
+                if(currNode.left != null)
                     queue.push(currNode.left);
     
-                if(currNode.right !== null)
+                if(currNode.right != null)
                     queue.push(currNode.right);
             }
             depth++;
         }
-        return null;
+        return depth;
     }
 
-    isBalanced(){
+    isBalanced(root){
+        if(root == null){
+            return true;
+        }
+
+        let rootLeft  = this.height(root.left); 
+        let rootRight = this.height(root.right); 
+
+        if(Math.abs(rootLeft-rootRight) > 1) return false;
+
+        return this.isBalanced(root.left) && this.isBalanced(root.right);
     }
 
     rebalance(){
+        let tmpArr = [];
+
+        const traverse = (node) => {
+            if(node == null) return 
+
+            traverse(node.left);
+            tmpArr.push(node.data);
+            traverse(node.right);
+        }
+        traverse(this.#root);
+        this.buildTree(tmpArr);
     }
 
     getUniqueElements(arr){
         return Array.from(new Set(arr)).sort((a,b) => a - b);
     }
 
-    prettyPrint = (node, prefix = "", isLeft = true) => {
+    prettyPrint(node, prefix = "", isLeft = true){
         if (node === null) {
           return;
         }
-        if (node.right !== null) {
-          prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+        if (node.right != null) {
+          this.prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
         }
         console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-        if (node.left !== null) {
-          prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+        if (node.left != null) {
+          this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
         }
     };
+
+    getRoot(){
+        return this.#root;
+    }
 }
 
 export {Tree};
